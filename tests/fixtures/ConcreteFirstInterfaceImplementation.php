@@ -2,6 +2,7 @@
 
 use Psr\Http\MessageInterface;
 use Psr\Http\Exception\InvalidArgumentException;
+use Psr\Http\StreamInterface;
 
 class ConcreteFirstInterfaceImplementation implements MessageInterface
 {
@@ -183,10 +184,36 @@ class ConcreteFirstInterfaceImplementation implements MessageInterface
      *
      * @throws \Psr\Http\Exception\InvalidArgumentException When the body is not valid.
      */
-    public function setBody($body)
+    public function setBody(StreamInterface $body = NULL)
     {
         throw new InvalidArgumentException('The body is not valid');
         // TODO: Implement setBody() method.
+    }
+
+    /**
+     * Appends a header value to any existing values associated with the
+     * given header name.
+     *
+     * @param string $header Header name to add
+     * @param string $value Value of the header
+     *
+     * @return self
+     */
+    public function addHeader($header, $value)
+    {
+        // TODO: Implement addHeader() method.
+    }
+
+    /**
+     * Remove a specific header by case-insensitive name.
+     *
+     * @param string $header HTTP header to remove
+     *
+     * @return self
+     */
+    public function removeHeader($header)
+    {
+        // TODO: Implement removeHeader() method.
     }
 }
 
