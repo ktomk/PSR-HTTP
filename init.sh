@@ -1,2 +1,2 @@
 #!/bin/sh
-curl -O https://raw2.github.com/mtdowling/fig-standards/7d9389440026162b2e1ee0917be3dce8adf5cd0c/proposed/http.md
+curl -O https://raw2.github.com/mtdowling/fig-standards/c7991d5f84d281e9a77ad5551ef5620a610975fa/proposed/http.md
