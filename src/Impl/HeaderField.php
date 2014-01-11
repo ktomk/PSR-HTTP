@@ -3,8 +3,9 @@
 namespace Impl;
 
 use InvalidArgumentException;
+use Psr\Http\HeaderFieldInterface;
 
-class HeaderField
+class HeaderField implements HeaderFieldInterface
 {
     /**
      * @var string header field-name
