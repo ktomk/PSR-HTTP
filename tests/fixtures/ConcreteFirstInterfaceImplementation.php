@@ -1,7 +1,6 @@
 <?php
 
 use Psr\Http\MessageInterface;
-use Psr\Http\Exception\InvalidArgumentException;
 use Psr\Http\StreamInterface;
 
 class ConcreteFirstInterfaceImplementation implements MessageInterface

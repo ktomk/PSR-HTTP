@@ -11,7 +11,7 @@ $obj = new ConcreteFirstInterfaceImplementation();
 
 try {
     $obj->setBody(NULL);
-} catch (\Psr\Http\Exception\InvalidArgumentException $exception) {
+} catch (InvalidArgumentException $exception) {
     
 }
 
