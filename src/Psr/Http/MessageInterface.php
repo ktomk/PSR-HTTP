@@ -37,101 +37,28 @@ interface MessageInterface
     public function setBody(StreamInterface $body = null);
 
     /**
-     * Gets all headers.
+     * Get all headers or all of a specific name
      *
-     * The keys of the returned array represents the header name as it will be
-     * sent over the wire, and each value is a HeaderFieldValuesInterface object
-     * that can be used like an array or cast to a string.
+     * Each header is represented as a HeaderFieldInterface.
      *
-     *     // Represent the headers as a string
-     *     foreach ($message->getHeaders() as $name => $values) {
-     *         echo "{$name}: {$values}\r\n";
+     * The keys in the returned Traversable are such header-fields field-name and accordingly the
+     * values the field-value of that header-field.
+     *
+     *     // Represent headers as a string
+     *     $headers = '';
+     *     foreach ($message->getHeaders() as $name => $value) {
+     *         $headers .= "$name: $value\r\n";
      *     }
      *
-     * @return array Returns an associative array of the message's headers
+     * @param string $name (optional) providing a name returns header fields by that name
+     * @return HeadersInterface the message's header fields
      */
-    public function getHeaders();
+    public function getHeaders($name = NULL);
 
     /**
-     * Checks if a header exists by the given case-insensitive name.
+     * Set all headers
      *
-     * @param string $header Case-insensitive header name.
-     *
-     * @return bool Returns true if any header names match the given header
-     *              name using a case-insensitive string comparison. Returns
-     *              false if no matching header name is found in the message.
+     * @param HeadersInterface $headers
      */
-    public function hasHeader($header);
-
-    /**
-     * Retrieve a header by name.
-     *
-     * @param string $header Header name.
-     *
-     * @return HeaderFieldValuesInterface|null Returns the header values or or
-     *                                         null if not set.
-     */
-    public function getHeader($header);
-
-    /**
-     * Sets a header, replacing any existing values of any headers with the
-     * same case-insensitive name.
-     *
-     * The header values MUST be a string, an array of strings, or a
-     * HeaderFieldValuesInterface object.
-     *
-     * @param string                             $header Header name
-     * @param string|array|HeaderFieldValuesInterface $value  Header value(s)
-     *
-     * @return self Returns the message.
-     */
-    public function setHeader($header, $value);
-
-    /**
-     * Sets headers, replacing any headers that have already been set on the
-     * message.
-     *
-     * The array keys MUST be a string. The array values must be either a
-     * string, array of strings, or a HeaderFieldValuesInterface object.
-     *
-     * @param array $headers Headers to set.
-     *
-     * @return self Returns the message.
-     */
-    public function setHeaders(array $headers);
-
-    /**
-     * Appends a header value to any existing values associated with the
-     * given header name.
-     *
-     * @param string $header Header name to add
-     * @param string $value  Value of the header
-     *
-     * @return self
-     */
-    public function addHeader($header, $value);
-
-    /**
-     * Merges in an associative array of headers.
-     *
-     * Each array key MUST be a string representing the case-insensitive name
-     * of a header. Each value MUST be either an array of strings or an array
-     * of HeaderFieldValuesInterface objects. For each value, the value is
-     * appended to any existing header of the same name, or, if a header does
-     * not already exist by the given name, then the header is added.
-     *
-     * @param array $headers Associative array of headers to add to the message
-     *
-     * @return self
-     */
-    public function addHeaders(array $headers);
-
-    /**
-     * Remove a specific header by case-insensitive name.
-     *
-     * @param string $header HTTP header to remove
-     *
-     * @return self
-     */
-    public function removeHeader($header);
+    public function setHeaders(HeadersInterface $headers);
 }
