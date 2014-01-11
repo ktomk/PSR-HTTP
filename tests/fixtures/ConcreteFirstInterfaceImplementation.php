@@ -5,59 +5,19 @@ use Psr\Http\StreamInterface;
 
 class ConcreteFirstInterfaceImplementation implements MessageInterface
 {
-
-    /**
-     * Returns the message as an HTTP string.
-     *
-     * @return string Message as an HTTP string.
-     */
-    public function __toString()
-    {
-        // TODO: Implement __toString() method.
-    }
-
-    /**
-     * Gets the HTTP protocol version.
-     *
-     * @return string HTTP protocol version.
-     */
-    public function getProtocolVersion()
-    {
-        // TODO: Implement getProtocolVersion() method.
-    }
-
-    /**
-     * Sets the HTTP protocol version.
-     *
-     * @param string $protocolVersion The HTTP protocol version.
-     *
-     * @return self Reference to the message.
-     *
-     * @throws \Psr\Http\Exception\InvalidArgumentException When the HTTP protocol version is not valid.
-     */
-    public function setProtocolVersion($protocolVersion)
-    {
-        // TODO: Implement setProtocolVersion() method.
-    }
-
-    /**
-     * Gets a header.
-     *
-     * @param string $header Header name.
-     *
-     * @return string|null Header value, or null if not set.
-     */
-    public function getHeader($header)
-    {
-        // TODO: Implement getHeader() method.
-    }
-
     /**
      * Gets all headers.
      *
-     * The array keys are the header name, the values the header value.
+     * The keys of the returned array represents the header name as it will be
+     * sent over the wire, and each value is a HeaderValuesInterface object that
+     * can be used like an array or cast to a string.
      *
-     * @return array Headers.
+     *     // Represent the headers as a string
+     *     foreach ($message->getHeaders() as $name => $values) {
+     *         echo "{$name}: {$values}\r\n";
+     *     }
+     *
+     * @return array Returns an associative array of the message's headers
      */
     public function getHeaders()
     {
@@ -65,11 +25,13 @@ class ConcreteFirstInterfaceImplementation implements MessageInterface
     }
 
     /**
-     * Checks if a certain header is present.
+     * Checks if a header exists by the given case-insensitive name.
      *
-     * @param string $header Header name.
+     * @param string $header Case-insensitive header name.
      *
-     * @return bool If the header is present.
+     * @return bool Returns true if any header names match the given header
+     *              name using a case-insensitive string comparison. Returns
+     *              false if no matching header name is found in the message.
      */
     public function hasHeader($header)
     {
@@ -77,21 +39,29 @@ class ConcreteFirstInterfaceImplementation implements MessageInterface
     }
 
     /**
-     * Sets a header, replacing the existing header if has already been set.
-     *
-     * The header name and value MUST be a string, or an object that implement
-     * the `__toString()` method. The value MAY also be an array, in which case
-     * it MUST be converted to a comma-separated string; the ordering MUST be
-     * maintained.
-     *
-     * A null value will remove the existing header.
+     * Retrieve a header by name.
      *
      * @param string $header Header name.
-     * @param string $value Header value.
      *
-     * @return self Reference to the message.
+     * @return \Psr\Http\HeaderValuesInterface|null Returns the header values or or null
+     *                                    if not set.
+     */
+    public function getHeader($header)
+    {
+        // TODO: Implement getHeader() method.
+    }
+
+    /**
+     * Sets a header, replacing any existing values of any headers with the
+     * same case-insensitive name.
      *
-     * @throws \Psr\Http\Exception\InvalidArgumentException When the header name or value is not valid.
+     * The header values MUST be a string, an array of strings, or a
+     * HeaderValuesInterface object.
+     *
+     * @param string $header Header name
+     * @param string|array|\Psr\Http\HeaderValuesInterface $value Header value(s)
+     *
+     * @return self Returns the message.
      */
     public function setHeader($header, $value)
     {
@@ -99,94 +69,19 @@ class ConcreteFirstInterfaceImplementation implements MessageInterface
     }
 
     /**
-     * Sets headers, removing any that have already been set.
+     * Sets headers, replacing any headers that have already been set on the
+     * message.
      *
-     * The array keys must the header name, the values the header value.
-     *
-     * The header names and values MUST strings, or objects that implement the
-     * `__toString()` method. The values MAY also be arrays, in which case they
-     * MUST be converted to comma-separated strings; the ordering MUST be
-     * maintained.
+     * The array keys MUST be a string. The array values must be either a
+     * string, array of strings, or a HeaderValuesInterface object.
      *
      * @param array $headers Headers to set.
      *
-     * @return self Reference to the message.
-     *
-     * @throws \Psr\Http\Exception\InvalidArgumentException When part of the header set is not valid.
+     * @return self Returns the message.
      */
     public function setHeaders(array $headers)
     {
         // TODO: Implement setHeaders() method.
-    }
-
-    /**
-     * Adds headers, replacing those that are already set.
-     *
-     * The array keys must the header name, the values the header value.
-     *
-     * The header names and values MUST strings, or objects that implement the
-     * `__toString()` method. The values MAY also be arrays, in which case they
-     * MUST be converted to comma-separated strings; the ordering MUST be
-     * maintained.
-     *
-     * Null values will remove existing headers.
-     *
-     * @param array $headers Headers to add.
-     *
-     * @return self Reference to the message.
-     *
-     * @throws \Psr\Http\Exception\InvalidArgumentException When part of the header set is not valid.
-     */
-    public function addHeaders(array $headers)
-    {
-        // TODO: Implement addHeaders() method.
-    }
-
-    /**
-     * Gets the body.
-     *
-     * This returns the original form, in contrast to `getBodyAsString()`.
-     *
-     * @return mixed|null Body, or null if not set.
-     *
-     * @see getBodyAsString()
-     */
-    public function getBody()
-    {
-        // TODO: Implement getBody() method.
-    }
-
-    /**
-     * Gets the body as a string.
-     *
-     * @return string|null Body as a string, or null if not set.
-     */
-    public function getBodyAsString()
-    {
-        // TODO: Implement getBodyAsString() method.
-    }
-
-    /**
-     * Sets the body.
-     *
-     * The body SHOULD be a string, or an object that implements the
-     * `__toString()` method.
-     *
-     * A null value will remove the existing body.
-     *
-     * An implementation MAY accept other types, but MUST reject anything that
-     * it does not know how to turn into a string.
-     *
-     * @param mixed $body Body.
-     *
-     * @return self Reference to the message.
-     *
-     * @throws \Psr\Http\Exception\InvalidArgumentException When the body is not valid.
-     */
-    public function setBody(StreamInterface $body = NULL)
-    {
-        throw new InvalidArgumentException('The body is not valid');
-        // TODO: Implement setBody() method.
     }
 
     /**
@@ -213,6 +108,54 @@ class ConcreteFirstInterfaceImplementation implements MessageInterface
     public function removeHeader($header)
     {
         // TODO: Implement removeHeader() method.
+    }
+
+    /**
+     * Returns a string representation of the HTTP message.
+     *
+     * @return string Message as a string.
+     */
+    public function __toString()
+    {
+        // TODO: Implement __toString() method.
+    }
+
+    /**
+     * Gets the HTTP protocol version.
+     *
+     * @return string HTTP protocol version.
+     */
+    public function getProtocolVersion()
+    {
+        // TODO: Implement getProtocolVersion() method.
+    }
+
+    /**
+     * Gets the body of the message.
+     *
+     * @return StreamInterface|null Returns the body, or null if not set.
+     */
+    public function getBody()
+    {
+        // TODO: Implement getBody() method.
+    }
+
+    /**
+     * Sets the body of the message.
+     *
+     * The body MUST be a StreamInterface object. Setting the body to null MUST
+     * remove the existing body.
+     *
+     * @param StreamInterface|null $body Body.
+     *
+     * @return self Returns the message.
+     *
+     * @throws \InvalidArgumentException When the body is not valid.
+     */
+    public function setBody(StreamInterface $body = null)
+    {
+        throw new InvalidArgumentException('The body is not valid');
+        // TODO: Implement setBody() method.
     }
 }
 
