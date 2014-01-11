@@ -9,3 +9,4 @@ require __DIR__ . '/../src/Psr/Http/RequestInterface.php';
 require __DIR__ . '/../src/Psr/Http/ResponseInterface.php';
 
 require __DIR__ . '/../src/Impl/Rules.php';
+require __DIR__ . '/../src/Impl/HeaderField.php';
