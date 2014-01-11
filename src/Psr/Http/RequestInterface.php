@@ -2,44 +2,47 @@
 
 namespace Psr\Http;
 
-use Psr\Http\Exception\InvalidArgumentException;
-
 /**
- * A request message from a client to a server.
+ * A HTTP request message.
+ * @link http://tools.ietf.org/html/rfc2616#section-5
  */
 interface RequestInterface extends MessageInterface
 {
     /**
-     * Gets the method.
+     * Gets the HTTP method of the request.
      *
-     * @return string Method.
+     * @return string Returns the request method.
      */
     public function getMethod();
 
     /**
-     * Sets the method.
+     * Sets the method to be performed on the resource identified by the
+     * Request-URI. While method names are case case-sensitive, implementations
+     * SHOULD convert the method to all uppercase characters.
      *
-     * @param string $method Method.
+     * @param string $method Case-insensitive method.
      *
-     * @return self Reference to the request.
+     * @return self Returns the request.
      */
     public function setMethod($method);
 
     /**
-     * Gets the absolute URL.
+     * Gets the request URL.
      *
-     * @return string URL.
+     * @return string Returns the URL as a string.
      */
     public function getUrl();
 
     /**
-     * Sets the absolute URL.
+     * Sets the request URL.
      *
-     * @param string $url URL.
+     * The URL MUST be a string, or an object that implements the
+     * `__toString()` method.
+     *
+     * @param string $url Request URL.
      *
      * @return self Reference to the request.
-     *
-     * @throws InvalidArgumentException If the URL is invalid.
+     * @throws \InvalidArgumentException If the URL is invalid.
      */
     public function setUrl($url);
 }

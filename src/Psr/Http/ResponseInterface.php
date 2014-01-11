@@ -2,47 +2,30 @@
 
 namespace Psr\Http;
 
-use Psr\Http\Exception\InvalidArgumentException;
-
 /**
- * A request message from a server to a client.
+ * A HTTP response message.
+ * @link http://tools.ietf.org/html/rfc2616#section-6
  */
 interface ResponseInterface extends MessageInterface
 {
     /**
-     * Gets the response status code.
+     * Gets the response Status-Code, a 3-digit integer result code of the
+     * server's attempt to understand and satisfy the request.
      *
      * @return integer Status code.
      */
     public function getStatusCode();
 
     /**
-     * Sets the response status code.
+     * Gets the response Reason-Phrase, a short textual description of the
+     * Status-Code.
      *
-     * @param integer $statusCode Status code.
-     *
-     * @return self Reference to the response.
-     *
-     * @throws InvalidArgumentException When the status code is not valid.
-     */
-    public function setStatusCode($statusCode);
-
-    /**
-     * Gets the response reason phrase.
-     *
-     * If it has not been explicitly set using `setReasonPhrase()` it SHOULD
-     * return the RFC 2616 recommended reason phrase.
+     * Because a Reason-Phrase is not a required element in response
+     * Status-Line, the Reason-Phrase value MAY be null. Implementations MAY
+     * choose to return the default RFC 2616 recommended reason phrase for the
+     * response's Status-Code.
      *
      * @return string|null Reason phrase, or null if unknown.
      */
     public function getReasonPhrase();
-
-    /**
-     * Sets the response reason phrase.
-     *
-     * @param string $reasonPhrase Reason phrase.
-     *
-     * @return self Reference to the response.
-     */
-    public function setReasonPhrase($reasonPhrase);
 }
