@@ -12,7 +12,7 @@ namespace Psr\Http;
  * When implementing the Countable interface, implementations MUST return the
  * number of values in the list of header values.
  */
-interface HeaderValuesInterface extends \Countable, \Traversable, \ArrayAccess
+interface HeaderFieldValuesInterface extends \Countable, \Traversable, \ArrayAccess
 {
     /**
      * Convert the header values to a string, concatenating multiple values

@@ -18,21 +18,17 @@ HTTP messages consist of requests from a client to a server and responses from
 a server to a client. These messages are represented by
 `Psr\Http\RequestInterface` and `Psr\Http\ResponseInterface` respectively.
 
-- Both `Psr\Http\RequestInterface` and `Psr\Http\ResponseInterface` implement
+- Both `Psr\Http\RequestInterface` and `Psr\Http\ResponseInterface` extend
   `Psr\Http\MessageInterface`. While `Psr\Http\MessageInterface` MAY be
-  implemented directly, implementors are encourages to implement
+  implemented directly, implementors are encouraged to implement
   `Psr\Http\RequestInterface` and `Psr\Http\ResponseInterface`.
-
-- Both `Psr\Http\MessageInterface` extends the `Psr\Http\HasHeadersInterface`.
-  The `Psr\Http\HasHeadersInterface` MAY be implemented directly in cases where
-  an object needs an array of HTTP headers.
 
 #### 1.2 HTTP Headers
 
 ##### Case-insensitive headers
 
 HTTP messages include case-insensitive headers. Headers are retrieved from
-classes implementing the `HasHeadersInterface` interface in a case-insensitive
+classes implementing the `MessageInterface` interface in a case-insensitive
 manner. For example, retrieving the "foo" header will return the same result as
 retrieving the "FoO" header. Similarly, setting the "Foo" header will overwrite
 any previously set "foo" header.
@@ -54,8 +50,8 @@ echo $message->getHeader('foo');
 
 In order to accommodate headers with multiple values yet still provide the
 convenience of working with headers as strings, all header values are
-implemented using `HeaderValuesInterface` objects. Any object implementing
-`HeaderValuesInterface` can be used as an array or cast to a string. When a
+implemented using `HeaderFieldValuesInterface` objects. Any object implementing
+`HeaderFieldValuesInterface` can be used as an array or cast to a string. When a
 header containing multiple values is cast to a string, the values will be
 concatenated using a comma separator.
 
@@ -83,7 +79,7 @@ Because some headers cannot be concatenated using a comma (e.g., Set-Cookie),
 the most accurate method used for serializing message headers is to iterate
 over header values and serialize based on any rules for the specific header.
 Implementations MAY choose to internally maintain the state of classes
-implementing `HeaderValuesInterface` using an array of strings or a string
+implementing `HeaderFieldValuesInterface` using an array of strings or a string
 value. However, it is recommended that implementations maintain the internal
 state using an array so that headers that cannot be concatenated using a comma
 can be serialized using the array values rather than an invalid string. For
@@ -126,11 +122,6 @@ or written to.
   forwards or backwards to any location), or only sequential access (for
   example in the case of a socket or pipe).
 
-- The `StreamFactoryInterface` exposes a single factory method,
-  `create($data)`, that is used to create `StreamInterface` objects from
-  various input types including but not limited to strings, PHP stream
-  resources, and objects that implement the `__toString()` method.
-
 2. Package
 ----------
 
@@ -140,37 +131,25 @@ The interfaces and classes described are provided as part of the
 3. Interfaces
 -------------
 
-### 3.1 `Psr\Http\HasHeadersInterface`
+### 3.1 `Psr\Http\HeaderFieldValuesInterface`
 
-[File `HasHeadersInterface.php`](src/Psr/Http/HasHeadersInterface.php)
+[File `HeaderFieldValuesInterface.php`](src/Psr/Http/HeaderFieldValuesInterface.php)
 
-### 3.2 `Psr\Http\HeaderValuesInterface`
-
-[File `HeaderValuesInterface.php`](src/Psr/Http/HeaderValuesInterface.php)
-
-### 3.3 `Psr\Http\MessageInterface`
+### 3.2 `Psr\Http\MessageInterface`
 
 [File `MessageInterface.php`](src/Psr/Http/MessageInterface.php)
 
-### 3.4 `Psr\Http\RequestInterface`
+### 3.3 `Psr\Http\RequestInterface`
 
 [File `RequestInterface.php`](src/Psr/Http/RequestInterface.php)
 
-### 3.5 `Psr\Http\ResponseInterface`
+### 3.4 `Psr\Http\ResponseInterface`
 
 [File `ResponseInterface.php`](src/Psr/Http/ResponseInterface.php)
 
-### 3.6 `Psr\Http\MessageFactoryInterface`
-
-[File `MessageFactoryInterface.php`](src/Psr/Http/MessageFactoryInterface.php)
-
-### 3.7 `Psr\Http\StreamInterface`
+### 3.5 `Psr\Http\StreamInterface`
 
 [File `StreamInterface.php`](src/Psr/Http/StreamInterface.php)
-
-### 3.8 `Psr\Http\StreamFactoryInterface`
-
-[File `StreamFactoryInterface.php`](src/Psr/Http/StreamFactoryInterface.php)
 
 4. Design Decisions
 -------------------
@@ -180,27 +159,30 @@ The interfaces and classes described are provided as part of the
 The design of the `MessageInterface`, `RequestInterface`, and `ResponseInterface`
 interfaces are based on existing projects in the PHP community.
 
-#### `HasHeadersInterface` as a separate interface
+#### Why are there header methods on messages rather than in a header bag?
 
-`HasHeadersInterface` is provided as a separate interface so that other
-protocols that require a hash of case-insensitive headers can utilize the same
-interface if desired. For example, `HasHeadersInterface` could be used when
-implementing an email API for representing headers or for an HTTP client
-implementation that provides an abstraction for multipart/form-data elements
-that allow custom headers (e.g., Content-Disposition).
+Moving headers to a "header bag" breaks the Law of Demeter and exposes the
+internal implementation of a message to its collaborators. In order for
+something to access the headers of a message, they need to reach into the the
+message's header bag (`$message->getHeaders()->getHeader('Foo')`).
 
-#### Using `HeaderValuesInterface` instead of an array
+Moving headers from messages into an externally mutable "header bag" exposes the
+internal implementation of how a message manages its headers an has a
+side-effect that messages are no longer aware of changes to their headers. This
+can lead to messages entering into an invalid or inconistent state.
 
-Header values are represented using `HeaderValuesInterface`. This interface
+#### Using `HeaderFieldValuesInterface` instead of an array
+
+Header values are represented using `HeaderFieldValuesInterface`. This interface
 allows developers to work with headers as a string and as an array. This allows
-developers the flexibility of serialzing a header precisely as it should be
+developers the flexibility of serializing a header precisely as it should be
 sent over the wire, while still providing the convenience of working with
 headers that typically have a single value (e.g., Host, Content-Type, etc...)
 as a string. Furthermore, accessing missing elements of a
-`HeaderValuesInterface` will return `null` rather than emit a warning (as
+`HeaderFieldValuesInterface` will return `null` rather than emit a warning (as
 would happen if header values were represented as an actual PHP array).
 
-In addition to being more convenient, `HeaderValuesInterface` allows
+In addition to being more convenient, `HeaderFieldValuesInterface` allows
 implementations to pre-compute an internal cache of header values represented
 as a string instead of expecting developers to constantly implode an array of
 values into a string. This performance optimization can be useful in performance
@@ -232,7 +214,7 @@ if (isset($values[10])) {
 }
 ```
 
-When using `HeaderValuesInterface`, developers can safely interact with any
+When using `HeaderFieldValuesInterface`, developers can safely interact with any
 header as a string or array without having to first check if a specific index
 exists.
 
@@ -269,8 +251,6 @@ Having mutable and immutable messages would add a significant amount of
 complexity to a HTTP message PSR and would not reflect what is currently being
 used by a majority of PHP projects.
 
-#### Reasons for NOT including header specific methods
-
 #### Using streams instead of X
 
 `MessageInterface` uses a body value that must implement `StreamInterface`. This
@@ -301,20 +281,3 @@ capabilities using something like a `WritableStreamInterface` and
 like `isReadable()`, `isWritable()`, etc... This approach is used by Python,
 [C#, C++](http://msdn.microsoft.com/en-us/library/system.io.stream.aspx),
 [Ruby](http://www.ruby-doc.org/core-2.0.0/IO.html), and likely others.
-
-### Message factory design
-
-#### The addition of an `$options` array
-
-Allowing developers to pass an array of `$options` to
-`MessageFactoryInterface::createRequest()` and
-`MessageFactoryInterface::createResponse()` helps to future-proof factory's
-interface for future additions without breaking the API and allows implementations
-to directly implement the HTTP message PSR without requiring an adapter while
-providing the ability to expose implementation specific customization settings.
-This can be useful if a developer knows exactly which client they are interacting
-with.
-
-If patterns emerge in the community that show specific options are used across
-implementations in the same manner, then a future PSR could be proposed to
-formally define some of the options available to the `$options` array.
