@@ -15,5 +15,6 @@ require __DIR__ . '/../src/Psr/Http/ResponseInterface.php';
 
 require __DIR__ . '/../src/Impl/Rules.php';
 require __DIR__ . '/../src/Impl/HeaderField.php';
+require __DIR__ . '/../src/Impl/Headers.php';
 require __DIR__ . '/../src/Impl/Message.php';
 require __DIR__ . '/../src/Impl/MessageHeaderIterator.php';
