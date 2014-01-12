@@ -18,3 +18,4 @@ require __DIR__ . '/../src/Impl/HeaderField.php';
 require __DIR__ . '/../src/Impl/Headers.php';
 require __DIR__ . '/../src/Impl/Message.php';
 require __DIR__ . '/../src/Impl/MessageHeaderIterator.php';
+require __DIR__ . '/../src/Impl/MessageHeaders.php';
